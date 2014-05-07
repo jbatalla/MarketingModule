@@ -1,0 +1,30 @@
+<form id="co-marketing-form" action="">
+<fieldset>
+	<label for="marketing:like" ><h4><?php echo $this->__('Where did you hear about us?') ?></h4></label>
+		<div class="input-box">	
+			<select class="required-entry" name="marketing[like]" id="marketing:like" style="width:250px;">
+				<option value=''><?php echo $this->__('Please Choose..');?></option>
+				<?php
+				$marketing = Mage::getModel('mktgmodule/mktgmodule');
+				$collections = $marketing->getCollection()->addFilter('is_active','Yes');
+				?>
+				<?php foreach ($collections as $item) : ?>
+					<option value='<?php echo $item["display_text"] ?>' <?php if($this->getQuote()->getMarketingLike() ==  $item["display_text"]){echo 'selected="selected"';} ?>><?php echo $item["display_text"] ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+    <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+    <div class="buttons-set" id="marketing-buttons-container">     
+        <button type="button" title="<?php echo $this->__('Continue') ?>" class="button right" onclick="marketing.save()"><span class="left"></span><span class="center"><?php echo $this->__('Continue') ?></span><span class="right"></span></button>
+        <span class="please-wait" id="marketing-please-wait" style="display:none;">
+            <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Loading next step...') ?>" title="<?php echo $this->__('Loading next step...') ?>" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+        </span>
+    </div>
+</fieldset>
+</form>
+<script type="text/javascript">
+//<![CDATA[
+    var marketing = new MarketingMethod('co-marketing-form','<?php echo $this->getUrl('mktgmodule/onepage/saveMarketing') ?>');
+    var marketingForm = new VarienForm('co-marketing-form');
+//]]>
+</script>

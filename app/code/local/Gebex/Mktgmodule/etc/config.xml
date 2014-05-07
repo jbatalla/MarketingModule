@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Gebex_Mktgmodule>
+            <version>0.2.0</version>
+        </Gebex_Mktgmodule>
+    </modules>
+    <frontend>
+        <routers>
+            <Gebex_Mktgmodule>
+                <use>standard</use>
+                <args>
+                    <module>Gebex_Mktgmodule</module>
+                    <frontName>mktgmodule</frontName>
+                </args>
+            </Gebex_Mktgmodule>
+        </routers>
+        <layout>
+            <updates>
+                <mktgmodule>
+                    <file>mktgmodule.xml</file>
+                </mktgmodule>
+            </updates>
+        </layout>		
+    </frontend>
+    <admin>
+        <routers>
+			<mktgmodule>
+				<use>admin</use>
+				<args>
+					<module>Gebex_Mktgmodule</module>
+					<frontName>mktgmodule</frontName>
+				</args>
+			</mktgmodule>
+        </routers>
+    </admin>
+    <adminhtml>	
+        <menu>
+            <gebex translate="title" module="mktgmodule">
+				<title>Gebana Extension</title>
+				<sort_order>100</sort_order>				
+				<children>
+					<mktgmodule translate="title" module="mktgmodule">
+						<title>Manage Marketing Project</title>
+						<sort_order>250</sort_order>
+						<action>mktgmodule/admin</action>
+            		</mktgmodule>			
+				</children>
+			</gebex>
+        </menu>	
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <gebex translate="title" module="mktgmodule">
+                            <title>Marketing Project Module</title>
+                            <sort_order>250</sort_order>
+								<children>
+									<mktgmodule>
+										<title>Manage Marketing Project</title>
+									</mktgmodule>
+                                </children>
+                        </gebex>
+                    </children>
+                </admin>
+            </resources>   
+        </acl>
+        <translate>
+            <modules>
+                <Gebex_Mktgmodule>
+                    <files>
+                        <default>Gebex_Mktgmodule.csv</default>
+                    </files>
+                </Gebex_Mktgmodule>
+            </modules>
+        </translate>	
+		<layout>
+			<updates>
+				<mktgmodule>
+					<file>mktgmodule.xml</file>
+				</mktgmodule>
+			</updates>
+		</layout>					
+    </adminhtml>
+			
+    <global>
+	
+		<fieldsets>
+            <sales_convert_quote>
+                <compiere_search_key><to_order>*</to_order></compiere_search_key>
+            </sales_convert_quote>
+        </fieldsets>
+			
+    	<rewrite>
+	        <test_cart> <!--This can be any unique id -->
+	            <from><![CDATA[#^/checkout/onepage/#]]></from>  <!-- the URL which u want to override-->
+	            <to>/mktgmodule/onepage/</to>  <!-- destination url -->
+	        </test_cart>
+	    </rewrite>	
+
+    	<events>
+		
+		<checkout_controller_onepage_save_shipping_method>
+			<observers>
+				<setMarketingValue>
+				<type>singleton</type>
+				<class>Gebex_Mktgmodule_Model_Observer</class>
+				<method>setMarketingValue</method>
+				</setMarketingValue>
+			</observers>			
+		</checkout_controller_onepage_save_shipping_method>
+			
+		<!--<checkout_type_onepage_save_order>			
+			<observers>
+				<addMarketingOrder>
+					<type>singleton</type>
+					<class>Gebex_Mktgmodule_Model_Observer</class>
+					<method>addMarketingOrder</method>
+				</addMarketingOrder>
+			</observers>
+		</checkout_type_onepage_save_order>-->
+
+	     <sales_quote_save_before> <!-- Event Called Before Quote Object is saved -->
+	         <observers>
+	                   <save_before>
+	                    <type>singleton</type>
+	                    <class>Gebex_Mktgmodule_Model_Observer</class> <!-- Over Model Class -->
+	                    <method>saveQuoteBefore</method> <!-- name of function -->
+	                  </save_before>
+	        </observers>
+	      </sales_quote_save_before>
+	      <sales_quote_save_after> <!-- Event called After Quote Object is saved -->
+	         <observers>
+	                   <save_after>
+		                    <type>singleton</type>
+		                    <class>Gebex_Mktgmodule_Model_Observer</class> <!-- Over Model Class -->
+		                    <method>saveQuoteAfter</method> <!-- name of function -->
+	                  </save_after>
+	        </observers>
+	      </sales_quote_save_after>
+	      <sales_quote_load_after> <!-- Event called when Quote Object is loaded -->
+	      		<observers>
+	      	 		<load_after>
+		                    <type>singleton</type>
+		                    <class>Gebex_Mktgmodule_Model_Observer</class> <!-- Over Model Class -->
+		                    <method>loadQuoteAfter</method> <!-- name of function -->
+	                 </load_after>
+	             </observers>
+	      </sales_quote_load_after>
+	      <sales_model_service_quote_submit_after> <!-- Event called after order placed -->
+	      		<observers>
+	      	 		<sales_model_service_quote_submit_after>
+		                    <type>singleton</type>
+		                    <class>Gebex_Mktgmodule_Model_Observer</class> <!-- Over Model Class -->
+		                    <method>saveOrderAfter</method> <!-- name of function -->
+	                 </sales_model_service_quote_submit_after>
+	             </observers>
+	      </sales_model_service_quote_submit_after>
+	      <sales_order_load_after> <!-- Event called after Order Object is loaded -->
+	      		<observers>
+	      	 		<sales_order_load_after>
+		                    <type>singleton</type>
+		                    <class>Gebex_Mktgmodule_Model_Observer</class> <!-- Over Model Class -->
+		                    <method>loadOrderAfter</method> <!-- name of function -->
+	                 </sales_order_load_after>
+	             </observers>
+	      </sales_order_load_after>
+	</events> 
+		
+        <models>
+
+        	<checkout>
+	            <rewrite>
+	                <type_onepage>Gebex_Mktgmodule_Model_Checkout_Type_Onepage</type_onepage>
+	            </rewrite>
+	        </checkout>
+        	<sales>
+        		<rewrite>
+        			<order>Gebex_Mktgmodule_Model_Sales_Order</order>
+        		</rewrite>
+        	</sales>
+					
+            <mktgmodule>
+                <class>Gebex_Mktgmodule_Model</class>
+                <resourceModel>mktgmodule_mysql4</resourceModel>
+            </mktgmodule>
+            <mktgmodule_mysql4>
+                <class>Gebex_Mktgmodule_Model_Mysql4</class>
+                <entities>
+                    <mktgmodule>
+                        <table>geb_marketing</table>
+                    </mktgmodule>
+                    <mktgmodule_quote>
+                        <table>sales_quote_custom</table>
+                    </mktgmodule_quote>
+                    <mktgmodule_order>
+                        <table>sales_order_custom</table>
+                    </mktgmodule_order>					
+                </entities>
+            </mktgmodule_mysql4>
+        </models>
+
+        <resources>
+            <mktgmodule_setup>
+                <setup>
+                    <module>Gebex_Mktgmodule</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </mktgmodule_setup>
+            <mktgmodule_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </mktgmodule_write>
+            <mktgmodule_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </mktgmodule_read>
+        </resources>
+
+		<blocks>
+        	<checkout>
+        		<rewrite>
+        			<onepage>Gebex_Mktgmodule_Block_Checkout_Onepage</onepage>
+        		</rewrite>
+        	</checkout>		
+            <mktgmodule>
+                <class>Gebex_Mktgmodule_Block</class>
+            </mktgmodule>
+        </blocks>
+		
+         <helpers>
+            <mktgmodule><class>Gebex_Mktgmodule_Helper</class></mktgmodule>
+        </helpers>
+	
+    </global>
+
+
+</config>

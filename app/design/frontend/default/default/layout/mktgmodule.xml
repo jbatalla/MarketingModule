@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <sales_order_view> <!-- Code From Previous Module -->
+        <reference name="my.account.wrapper">
+            <block type="mktgmodule/mktgmodule_order" name="custom.order" template="mktgmodule/order.phtml" after='sales.order.info' />
+        </reference>
+    </sales_order_view>
+    <checkout_onepage_index> <!-- Adding our new step to onepage block  -->
+    	<reference name='checkout.onepage'>
+    		 <action method='setTemplate'><template>mktgmodule/checkout/onepage.phtml</template></action>
+    		 <block type="mktgmodule/checkout_onepage_marketing" name="checkout.onepage.marketing" as="marketing" template="mktgmodule/checkout/onepage/marketing.phtml"/>
+    	</reference>
+    	<reference name='checkout.progress'> <!-- Change the template of progress block -->
+    	      <action method='setTemplate'><template>mktgmodule/checkout/onepage/progress.phtml</template></action>
+    	</reference>
+    </checkout_onepage_index>
+    <checkout_onepage_progress>  <!-- Change the template of progress block -->
+    	<reference name='root'>
+    		<action method='setTemplate'><template>mktgmodule/checkout/onepage/progress.phtml</template></action>
+    	</reference>
+    </checkout_onepage_progress>    
+</layout> 
